@@ -5,7 +5,7 @@ class TransactionIn(BaseModel):
     description: str = Field(min_length=2, max_length=120)
     amount: float = Field(gt=0, le=10_000_000)
     category: str = Field(min_length=2, max_length=40)
-    occurred_on: str = Field(pattern=r"^\\d{4}-\\d{2}-\\d{2}$")
+    occurred_on: str = Field(pattern=r"^\d{4}-\d{2}-\d{2}$")
 
 class SafetyIn(BaseModel):
     description: str = Field(min_length=2, max_length=1000)
