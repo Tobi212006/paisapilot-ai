@@ -1,0 +1,44 @@
+{
+  "name": "paisapilot-launch",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "node scripts/build.mjs",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:server": "node --test tests/*.test.mjs",
+    "db:generate": "drizzle-kit generate"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
+    "framer-motion": "^11.15.0",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.15.0",
+    "typescript": "^5.7.2",
+    "drizzle-orm": "0.45.2"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.10",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^5.2.0",
+    "@vitest/coverage-v8": "^5.1.0",
+    "jsdom": "^31.0.1",
+    "tailwindcss": "^3.4.17",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0",
+    "drizzle-kit": "0.31.11"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "overrides": {
+    "esbuild": "0.28.2"
+  }
+}

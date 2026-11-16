@@ -1,0 +1,8 @@
+import {readFile,writeFile,mkdir,readdir,copyFile,cp} from 'node:fs/promises';
+import {spawnSync} from 'node:child_process';
+import path from 'node:path';
+process.env.VITE_API_BASE_URL='/';process.env.VITE_SUPABASE_URL='';process.env.VITE_SUPABASE_PUBLISHABLE_KEY='';process.env.VITE_HOSTED_NATIVE='true';
+for(const args of [['node_modules/typescript/bin/tsc','--noEmit'],['node_modules/vite/bin/vite.js','build','--outDir','dist/client']]){const r=spawnSync(process.execPath,args,{stdio:'inherit',env:process.env});if(r.status)process.exit(r.status||1)}
+const assets={};const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.ico':'image/x-icon'};
+async function collect(dir){for(const entry of await readdir(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory())await collect(file);else assets['/'+path.relative('dist/client',file).replaceAll('\\','/')]={data:(await readFile(file)).toString('base64'),type:types[path.extname(file)]||'application/octet-stream'}}}
+await collect('dist/client');const code=(await readFile('worker/index.mjs','utf8')).replace("import {assets} from './assets.mjs';",'const assets='+JSON.stringify(assets)+';');await mkdir('dist/server',{recursive:true});await writeFile('dist/server/index.js',code);await mkdir('dist/.openai',{recursive:true});await copyFile('.openai/hosting.json','dist/.openai/hosting.json');await cp('drizzle','dist/.openai/drizzle',{recursive:true});console.log('Built persistent hosted Worker and original React interface.');
