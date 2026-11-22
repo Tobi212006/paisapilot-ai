@@ -57,9 +57,9 @@ npm.cmd run build
 
 ## Verification and honest limits
 
-Recorded checks: **103 FastAPI tests, 63 hosted UI tests and 12 hosted API contract tests passed**; production builds passed. Hosted contract tests use a SQLite-backed D1 adapter, not a live Cloudflare environment. See [verification details](docs/STATUS.md).
+Current repair checks: **112 FastAPI tests, 62 local UI tests, 65 hosted UI tests and 17 hosted API contract tests passed**; both production builds passed. Hosted contract tests use a SQLite-backed D1 adapter, not a live Cloudflare environment. See [verification details](docs/STATUS.md).
 
-Live browser checks covered dashboard loading, import preview/commit, undo/restore, saved budgets and currency conversion. Gemini is configured server-side, but a successful reply from the final hosted deployment remains **unverified** after earlier timeouts. Private sign-in acceptance and backup recovery drills also remain pending. Upstox is not connected. There is no automatic bank/UPI sync, tax filing, full portfolio analysis or backtesting engine.
+Live browser checks covered dashboard loading, import preview/commit, undo/restore, saved budgets and currency conversion. A Gemini-origin reply was observed in the hosted Learn screen on 22 November; cache freshness and the repaired branch’s production behavior remain unverified. Private sign-in acceptance and backup recovery drills also remain pending. Upstox is not connected. There is no automatic bank/UPI sync, tax filing, full portfolio analysis or backtesting engine.
 
 UPI screening is an educational heuristic, not confirmed fraud detection. Reference rates and NAVs are dated data, not executable quotes. GST and credit calculations are illustrations, not filing or lending advice. This MVP is not certified production financial infrastructure.
 
@@ -70,3 +70,15 @@ Screenshots show synthetic demonstration data. Dashboard and mobile captures are
 [Mobile layout](docs/screenshots/mobile.jpg) · [Hosted credit screen](docs/screenshots/hosted-credit.jpg)
 
 Dark Veil is adapted from React Bits; its attribution and MIT license are retained in each frontend's `src/vendor/react-bits/`. Other dependencies retain their respective licenses. Mascots are local SVG components. See [design notes](docs/DESIGN.md).
+
+## Arthaton 2026 submission preparation
+
+[Compliance matrix](docs/HACKATHON_COMPLIANCE.md) · [Current audit and tests](docs/AUDIT_2026-11-22.md) · [Four-minute recording script](docs/DEMO_VIDEO.md)
+
+The official form was rechecked on 22 November: submissions and code pushes close at **23:59 IST on 22 November 2026**. The YouTube demonstration must be public or unlisted and **under five minutes**, showing the working app and AI. No video URL or final submission receipt has been verified; this is not yet a completed submission. Keep the repository and video available until results.
+
+Pip uses Google Gemini `generateContent`: the hosted source defaults to `gemini-3.5-flash-lite`; the separate local source defaults to `gemini-3.1-flash-lite`. `GEMINI_MODEL` can override the default server-side; production's configured override was not inspected. Both identifiers were present in Google's official model documentation at audit time; that does not establish account entitlement. Never set a provider key in a `VITE_*` variable. The hosted request has at most two attempts within a 45-second deadline; the local Gemini request has at most two within 25 seconds. Quota and configuration failures are not retried.
+
+A Gemini-origin explanation was observed in the hosted Learn screen on 22 November; its cache freshness was not visible in the old UI. The repaired UI labels cache hits. Private sign-in/recovery and backup restore remain unverified, and the previously exposed credential must still be identified and revoked by its owner. No repair-branch change is claimed deployed.
+
+Fresh live evidence: [persisted dashboard](docs/screenshots/audit-2026-11-22/live-overview.jpg), [budget warning](docs/screenshots/audit-2026-11-22/live-budget.jpg), and [Pip explanation](docs/screenshots/audit-2026-11-22/live-pip.jpg). These show the existing deployed version with synthetic data; the repaired branch is not yet deployed.

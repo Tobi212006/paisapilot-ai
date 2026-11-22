@@ -1,17 +1,13 @@
 # Known limitations and red flags
 
-## High priority
-- **No authentication or user isolation:** local demo records are shared. Do not deploy with personal data.
-- **No bank/UPI connection:** data is synthetic or user-entered; never describe this as bank sync.
-- **Heuristic safety screening:** keyword/amount rules can miss scams and produce false positives. It is not trained ML or a guarantee.
-- **Assistant is not yet integrated:** the Learn page contains static financial-literacy guidance, not a connected AI model.
-- **Historical market input only:** no live NSE data, investment recommendation or trading execution.
-- **GST estimate is illustrative:** rates and treatment depend on transaction facts and current rules.
-- **Invoice drafts are not automatically compliant tax invoices:** no GST registration checks, e-invoicing or e-way bill support.
-- **No production security audit:** authentication, rate limiting, audit trail and deployment hardening are outstanding.
+- The prior exposed provider credential is **not confirmed revoked**. Follow [SECURITY](SECURITY.md); a clean targeted repository scan does not settle an earlier exposure.
+- The hosted AI reply was observed on 22 November, but cache freshness was not visible in the old UI and availability can change. Repairs and cache labels are in PR #2, not automatically deployed.
+- Hosted sample records are per browser. Local demo records are shared by that local server's visitors. Real private sign-in/recovery and hosting identity-header assurance remain acceptance work.
+- Manual/CSV/pasted-text inputs are not bank or UPI synchronization. Missing imports produce incomplete insights.
+- UPI language/amount rules are educational heuristics. They can miss scams and trigger false positives. Their score is not a calibrated fraud probability.
+- Currency data is a dated reference rate and NAV data is historical. Neither is an executable quote, fund recommendation or return guarantee. Stock authorization is not connected to the hosted demo. No trade execution exists.
+- GST calculations and invoice drafts are illustrative. No registration checks, filing, e-invoicing or e-way bill support is claimed.
+- Backup restore, a current real mobile-device walkthrough, independent security review and full production hardening remain unverified. Local quotas are process-local; backend dependency ranges are not a transitive lockfile.
+- The required YouTube demonstration and final hackathon receipt have not been verified. Do not label the project submission READY until mandatory rules in [the compliance matrix](HACKATHON_COMPLIANCE.md) are satisfied.
 
-## Repository hygiene
-Before publishing a release, scan current files and Git history for tokens, passwords, private keys, personal records, database files, uploads and logs. Keep secrets in local environment variables and rotate any credential accidentally committed.
-
-## Claims to avoid
-Do not claim 100% fraud protection, live bank sync, live stock prediction, guaranteed returns, automatic tax filing, or production readiness unless the capability is genuinely implemented and reviewed.
+Never claim guaranteed fraud protection, bank sync, stock prediction, guaranteed returns, automated tax filing or certified production readiness. Demonstrate synthetic data only and keep secrets out of Git, exports, screenshots and logs.
