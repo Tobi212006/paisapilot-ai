@@ -5,6 +5,7 @@ from collections import OrderedDict
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 import httpx
+from ..services.gemini import generate
 from ..auth import auth_config, owner_id
 from ..config import demo_allowed
 from ..services import providers
@@ -95,7 +96,7 @@ async def explain(payload: AssistantIn, request: Request, owner: str = Depends(o
         raise HTTPException(503, "Invalid assistant model configuration.")
     try:
         async with httpx.AsyncClient(timeout=25) as client:
-            response = await client.post(f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent", headers={"x-goog-api-key": key}, json={
+            response = await generate(client, f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent", headers={"x-goog-api-key": key}, json={
                 "systemInstruction": {"parts": [{"text": "You are Pip, a financial literacy educator for India. Use plain English, under 180 words. Do not provide personalized investment advice, guaranteed returns or requests for credentials. End with a brief educational disclaimer."}]},
                 "contents": [{"parts": [{"text": TOPICS[payload.topic]}]}],
                 "generationConfig": {"maxOutputTokens": 450, "temperature": 0.3}})
