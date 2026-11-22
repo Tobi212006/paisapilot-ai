@@ -27,5 +27,8 @@ it('undoes an import batch and exposes its reversible behavior',async()=>{mock.m
 it('explains why sample financial-summary sharing is disabled',async()=>{
  mock.mockImplementation(async path=>path==='/api/planning/provider'?{provider:null,notice:'Financial-summary sharing is disabled in sample workspaces.'} as never:structuredClone(data) as never);
  hub();expect(await screen.findByText(/Financial-summary sharing is disabled in sample workspaces/)).toBeInTheDocument();
- expect(screen.getByRole('checkbox')).toBeDisabled();expect(screen.getByRole('button',{name:'Explain these totals'})).toBeDisabled();
+ expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Explain these totals'})).not.toBeInTheDocument();
+ mock.mockResolvedValueOnce({answer:'A general budgeting explanation.'} as never);fireEvent.click(screen.getByRole('button',{name:'Explain this topic'}));await screen.findByText('A general budgeting explanation.');
+ expect(mock).toHaveBeenCalledWith('/api/assistant/explain',{method:'POST',body:JSON.stringify({topic:'budget'}),signal:expect.any(AbortSignal)});
+ expect(mock.mock.calls.some(([path])=>path==='/api/planning/explain')).toBe(false);
 });
