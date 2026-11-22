@@ -4,7 +4,21 @@
 
 [Open the live demo](https://paisapilot-ai-amruta-launch.perfectturaco256.chatgpt.site) · [Judge walkthrough](docs/JUDGING.md) · [Architecture and API status](docs/STATUS.md) · [Local setup](docs/RUNNING.md)
 
-PaisaPilot is an India-focused educational finance MVP for the **AI for Finance** hackathon theme. It combines reviewed transaction imports, transparent budgeting, savings goals and payment-safety education with Pip, an optional AI explainer. All demonstrations use synthetic records. No real-money trading is provided.
+PaisaPilot helps people in India turn reviewed transaction records into understandable budgets and savings plans. **Pip provides AI-powered financial education, while every financial total stays traceable to the underlying records.** The project addresses Arthaton’s **AI for Finance** theme through smart budgeting and payment-safety education.
+
+The core journey is simple: review a sample import, inspect spending, set a category limit, track a savings goal and ask Pip to explain a finance topic. Demonstrations use synthetic data; the app does not execute payments or real-money trades.
+
+## Start with the working demo
+
+1. [Open PaisaPilot](https://paisapilot-ai-amruta-launch.perfectturaco256.chatgpt.site) and choose **Open workspace**. The sample journey requires no sign-in.
+2. Open **Transactions → Try sample month → Preview and review**. Check each entry before confirming; imports can be undone and restored.
+3. Inspect **Overview** for income, spending and cash flow. Refunds reduce spending; transfers are excluded from income and spending.
+4. Use **Budget** for a category limit and **Goals** for a target and recorded contribution.
+5. Open **Learn**, or the learning controls beside monthly evidence, and choose **Explain this topic** for Pip’s AI-generated education. Topic explanations do not use your transaction records; provider availability and quotas still apply.
+
+## What AI contributes
+
+Pip uses Google Gemini to explain budgeting, credit, emergency savings, UPI safety and mutual-fund concepts in plain language. Ledger calculations, import validation and budget comparisons use application logic. AI can explain concepts; it cannot edit the ledger, verify fraud or predict investment returns. Private aggregate-summary functionality has a separate consent flow and remains subject to the verification limits below.
 
 ![PaisaPilot landing page](docs/screenshots/landing.jpg)
 
