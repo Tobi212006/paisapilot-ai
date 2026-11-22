@@ -19,3 +19,12 @@ describe('money tools',()=>{
  it('clears old CSV when a replacement file is too large',async()=>{mockApi.mockResolvedValue([]);render(<BudgetTools onSaved={()=>{}}/>);fireEvent.change(screen.getByLabelText('Or paste CSV'),{target:{value:'old CSV'}});fireEvent.change(screen.getByLabelText('Choose a CSV file'),{target:{files:[new File(['x'.repeat(250001)],'too-large.csv',{type:'text/csv'})]}});expect(screen.getByLabelText('Or paste CSV')).toHaveValue('');expect(await screen.findByRole('alert')).toHaveTextContent('smaller than 250 KB')});
  it('shows an import error without a confirm button',async()=>{mockApi.mockImplementation(async(path)=>{if(path==='/api/transactions')return [] as never;throw Error('Invalid CSV')});render(<BudgetTools onSaved={()=>{}}/>);fireEvent.change(screen.getByLabelText('Or paste CSV'),{target:{value:'broken'}});fireEvent.click(screen.getByRole('button',{name:'Preview import'}));expect(await screen.findByRole('alert')).toHaveTextContent('Invalid CSV');expect(screen.queryByRole('button',{name:/Confirm and import/})).not.toBeInTheDocument()});
 });
+it('labels cached AI output and prevents topic changes during requests',async()=>{
+ let resolve!:(value:unknown)=>void;mockApi.mockImplementation(()=>new Promise(r=>{resolve=r}) as never);
+ render(<LearningAI/>);fireEvent.click(screen.getByRole('button',{name:'Explain this topic'}));
+ expect(screen.getByLabelText(/What would you like/)).toBeDisabled();
+ resolve({answer:'Cached educational explanation.',cached:true});
+ expect(await screen.findByText('Cached educational explanation.')).toBeInTheDocument();
+ expect(screen.getByText(/Source: Gemini/)).toHaveTextContent('Cached response');
+ expect(screen.getByLabelText(/What would you like/)).not.toBeDisabled();
+});

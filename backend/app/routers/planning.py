@@ -10,6 +10,7 @@ from decimal import Decimal
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import Field
 import httpx
+from ..services.gemini import generate
 from ..auth import owner_id
 from ..database import connect
 from ..money import paise, rupees
@@ -183,7 +184,7 @@ async def explain_month(payload: ExplainIn, owner: str = Depends(owner_id)):
                 model=os.getenv('GEMINI_MODEL','gemini-3.1-flash-lite')
                 if not re.fullmatch(r'[a-zA-Z0-9_.-]+',model):
                     raise ValueError()
-                response=await client.post(f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent',headers={'x-goog-api-key':key},json={'contents':[{'parts':[{'text':prompt}]}],'generationConfig':{'responseMimeType':'application/json','maxOutputTokens':350}})
+                response=await generate(client, f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent',headers={'x-goog-api-key':key},json={'contents':[{'parts':[{'text':prompt}]}],'generationConfig':{'responseMimeType':'application/json','maxOutputTokens':350}})
                 response.raise_for_status()
                 content=response.json()['candidates'][0]['content']['parts'][0]['text']
         explanation=json.loads(content)['explanation']

@@ -23,3 +23,35 @@ test('cross-site writes and malformed bodies are rejected',async()=>{const {call
 test('demo workspaces and private platform identities remain separate',async()=>{const a=setup();const r=await a.call('/api/connections');assert.equal(r.data.workspace_mode,'demo');assert.equal(r.headers.get('set-cookie').includes('HttpOnly'),true);await a.call('/api/transactions',row);assert.equal((await a.call('/api/transactions',undefined,'alice')).data.length,0);assert.equal((await a.call('/api/transactions',undefined,'alice',{'x-paisa-mode':'demo'})).data.length,6)});
 
 test('Worker-compatible redirects and cached public rates retain array shape',async()=>{let calls=0;const {call}=setup({__fetch:async(url,options)=>{assert.equal(options.redirect,'manual');calls++;return Response.json([{date:'2026-11-16',rate:91.5}])}});assert.equal((await call('/api/currency?base=CHF&quote=INR')).data.rate,91.5);assert.equal((await call('/api/currency?base=CHF&quote=INR')).data.rate,91.5);assert.equal(calls,1)});
+
+test('rejects prototype topics and malformed import rows before provider calls or writes',async()=>{
+ let calls=0;const {call}=setup({GEMINI_API_KEY:'test-only',__fetch:async()=>{calls++;throw Error('must not call')}});
+ for(const topic of ['toString','constructor','__proto__',null,[]])assert.equal((await call('/api/assistant/explain',{topic},'alice')).status,422);
+ for(const value of [null,[],true,'invalid'])assert.equal((await call('/api/review/commit',{request_id:crypto.randomUUID(),rows:[value]},'alice')).status,422);
+ assert.equal(calls,0);assert.equal((await call('/api/transactions',undefined,'alice')).data.length,0);
+});
+test('method contracts reject writes on reads and reads on writes',async()=>{
+ const {call}=setup();
+ for(const path of ['/api/connections','/api/planning/month','/api/review/batches','/api/records/export','/api/funds/122639'])assert.equal((await call(path,{},'alice')).status,405);
+ for(const path of ['/api/review/commit','/api/planning/budgets','/api/records/clear','/api/assistant/explain','/api/planning/transactions/1'])assert.equal((await call(path,undefined,'alice')).status,405);
+ assert.equal((await call('/api/dashboard')).data.data_label,'sample records in this browser');
+});
+test('Pip retries a transient provider outage once and labels subsequent cache hits',async()=>{
+ let calls=0;const {call}=setup({GEMINI_API_KEY:'test-only',__fetch:async()=>++calls===1?Response.json({}, {status:503}):Response.json({candidates:[{finishReason:'STOP',content:{parts:[{text:'Review recorded expenses. Educational guidance.'}]}}]})});
+ assert.equal((await call('/api/assistant/explain',{topic:'budget'},'alice')).status,200);assert.equal(calls,2);
+ assert.equal((await call('/api/assistant/explain',{topic:'budget'},'alice')).data.cached,true);assert.equal(calls,2);
+});
+test('Pip bounds retries and returns safe timeout, configuration and quota errors',async()=>{
+ for(const [status,expected] of [[429,429],[400,503],[401,503],[403,503],[404,503],[500,502]]){
+  let calls=0;const {call}=setup({GEMINI_API_KEY:'test-only',__fetch:async()=>{calls++;return Response.json({error:'private upstream details'}, {status})}});
+  const r=await call('/api/assistant/explain',{topic:'credit'},'alice');assert.equal(r.status,expected);assert.equal(calls,status===500?2:1);assert.ok(!JSON.stringify(r.data).includes('private upstream details'));
+ }
+ let calls=0;const {call}=setup({GEMINI_API_KEY:'test-only',__fetch:async(_url,options)=>{calls++;assert.ok(options.signal instanceof AbortSignal);throw new DOMException('test-only secret','TimeoutError')}});
+ const r=await call('/api/assistant/explain',{topic:'emergency'},'alice');assert.equal(r.status,504);assert.equal(calls,2);assert.ok(!JSON.stringify(r.data).includes('test-only secret'));
+});
+test('Pip rejects malformed, thought-only and truncated provider responses without retry',async()=>{
+ for(const data of [null,{}, {candidates:[{content:{parts:'invalid'}}]}, {candidates:[{content:{parts:[null,{thought:true,text:'internal'}]}}]}, {candidates:[{finishReason:'MAX_TOKENS',content:{parts:[{text:'Incomplete'}]}}]}]){
+  let calls=0;const {call}=setup({GEMINI_API_KEY:'test-only',__fetch:async()=>{calls++;return Response.json(data)}});
+  assert.equal((await call('/api/assistant/explain',{topic:'upi'},'alice')).status,502);assert.equal(calls,1);
+ }
+});

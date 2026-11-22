@@ -1,5 +1,14 @@
 # Architecture, API status and verification
 
+## Publication update — 22 November 2026
+
+The repairs are deployed as managed Site version 6, source `e100153629a8cc12e6bf2bc5f3cf7c8f01628aef`. The unavailable stock-quote form and stock connection listing are removed. Hosted sample records are labelled browser-isolated. Sample planning panels now offer Pip topic explanations instead of disabled aggregate-summary controls; sample totals remain blocked from external AI. Both UI suites (65 hosted / 62 local) and builds passed after this change. The earlier full run passed 112 backend and 17 hosted API contract tests.
+
+Post-publication browser checks confirmed the corrected label, removed stock form, a Gemini-origin Learn reply, import arithmetic and reload persistence, and the new Pip topic controls in the evidence panel. A five-row synthetic import changed 7 entries to 12, spending ₹5,979 to ₹7,329, income to ₹30,000 and cash flow to ₹22,671; the ₹2,000 transfer was excluded. The embedded topic control was tested automatically; its presence, rather than a new reply from that exact control, was checked live. Private sign-in/recovery, real-device mobile acceptance, backup restore and prior credential revocation remain unverified. Video and submission are handled by the entrant and are not confirmed here.
+
+The audit below records the earlier pre-publication state. Statements that repairs were not deployed describe that earlier state.
+
+
 ## Request flow
 
 Hosted: React -> same-origin Worker API -> owner-scoped D1 records. General Pip topics -> Gemini; public FX -> Frankfurter; NAV history -> MFapi. Server secrets are not embedded in the frontend.
@@ -11,7 +20,7 @@ Local: React -> FastAPI -> owner-scoped SQLite. Optional Supabase verifies local
 | Integration | Implementation and evidence | Limit |
 | --- | --- | --- |
 | Hosted records / D1 | Persistent owner-scoped API; browser imports, reload persistence and budgets checked | Operator restore drill pending |
-| Gemini / Pip | Server key configured; direct provider calls succeeded; final deployment includes timeout/caching repair | Final hosted answer unverified; earlier hosted timeouts |
+| Gemini / Pip | Server key configured; direct provider calls succeeded; final deployment includes timeout/caching repair | Gemini-origin answer observed in hosted Learn on 22 November; cache freshness unverified |
 | Frankfurter | Hosted browser conversion verified | Dated reference rates; not trade quotes |
 | MFapi | Provider requests verified locally, hosted adapter covered in contract tests | Full hosted fund journey pending |
 | Managed hosted identity | Sign-in and workspace switching implemented; UI tests passed | Actual private sign-in acceptance/recovery pending |
@@ -33,7 +42,7 @@ Budget alerts compare recorded category spending with the saved budget. Goals to
 - Type checking and production builds passed. Hosted dependency audit reported zero known vulnerabilities at verification time.
 - Live browser: landing/navigation, API-connected dashboard, import review/commit, undo/restore, budgets and currency conversion verified.
 - Programmatic live probes encountered hosting bot protection; this is not evidence of an API failure or pass.
-- Final hosted Gemini response, private sign-in acceptance, full hosted fund journey and backup restore remain unverified. Automated tests do not establish production readiness or validate provider answers.
+- A hosted Gemini-origin response was observed on 22 November. Private sign-in acceptance, full hosted fund journey and backup restore remain unverified. Automated tests do not establish production readiness or validate provider answers.
 
 ## Before real financial use
 
@@ -44,3 +53,7 @@ Rotate the previously exposed provider credential, confirm deployment secret sto
 `hosted/worker/index.mjs`: hosted API and security boundaries. `hosted/db/` and `hosted/drizzle/`: schema and applied migration history. `hosted/tests/`: API contract tests. `hosted/src/test/`: UI tests. `backend/app/`: local FastAPI implementation. `backend/tests/`: local API tests. `scripts/run_local.py`: local launcher.
 
 The hosted mirror comes from managed source commit `29c38a8f2bb61fea284732e6b9be4bc722249d01`. The live site is published independently; this repository is not an automatic deployment pipeline.
+
+## 22 November repair audit
+
+See [audit](AUDIT_2026-11-22.md), [compliance](HACKATHON_COMPLIANCE.md) and [recording plan](DEMO_VIDEO.md). Current branch verification supersedes historical test counts above. The live site remains managed source `29c38a8f2bb61fea284732e6b9be4bc722249d01`, version 3. Its application files match GitHub's original hosted mirror; README differs. Repair commits are not automatically deployed. PR #1's Python 3.12 change was reviewed separately and its GitHub CI succeeded; it has not been merged by this audit.
