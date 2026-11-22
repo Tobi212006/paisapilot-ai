@@ -17,7 +17,7 @@ PaisaPilot is an India-focused educational finance MVP for the **AI for Finance*
 - Navigate with a collapsible sidebar. Pip, Mint, Chip and Sentinel introduce relevant tools; motion can be paused and respects reduced-motion preferences.
 - Export or delete workspace records. The hosted demo uses isolated browser workspaces; managed sign-in is implemented for private workspaces.
 
-Pip adds plain-language explanations to deterministic calculations. AI does not calculate the financial ledger or execute payments. General explanations send a fixed topic only. Private financial summaries require consent and send six aggregate values, not transaction descriptions or account numbers.
+Pip adds plain-language explanations to deterministic calculations. AI does not calculate the financial ledger or execute payments. General explanations send a fixed topic only. In sample mode, Pip's topic controls are available directly beside the calculated evidence; sample totals are not shared with AI. The unconfigured stock-quote tool is removed. Private financial summaries require consent and send six aggregate values, not transaction descriptions or account numbers.
 
 ![Original dashboard with synthetic records](docs/screenshots/dashboard.jpg)
 
@@ -59,7 +59,7 @@ npm.cmd run build
 
 Current repair checks: **112 FastAPI tests, 62 local UI tests, 65 hosted UI tests and 17 hosted API contract tests passed**; both production builds passed. Hosted contract tests use a SQLite-backed D1 adapter, not a live Cloudflare environment. See [verification details](docs/STATUS.md).
 
-Live browser checks covered dashboard loading, import preview/commit, undo/restore, saved budgets and currency conversion. A Gemini-origin reply was observed in the hosted Learn screen on 22 November; cache freshness and the repaired branch’s production behavior remain unverified. Private sign-in acceptance and backup recovery drills also remain pending. Upstox is not connected. There is no automatic bank/UPI sync, tax filing, full portfolio analysis or backtesting engine.
+Live browser checks covered dashboard loading, import preview/commit, undo/restore, saved budgets and currency conversion. A Gemini-origin reply was observed in the hosted Learn screen on 22 November; the repairs are now deployed as managed Site version 6, including cache-hit labels. A new Gemini-origin reply was observed after publication. Private sign-in acceptance and backup recovery drills also remain pending. Upstox is not connected. There is no automatic bank/UPI sync, tax filing, full portfolio analysis or backtesting engine.
 
 UPI screening is an educational heuristic, not confirmed fraud detection. Reference rates and NAVs are dated data, not executable quotes. GST and credit calculations are illustrations, not filing or lending advice. This MVP is not certified production financial infrastructure.
 
@@ -79,6 +79,6 @@ The official form was rechecked on 22 November: submissions and code pushes clos
 
 Pip uses Google Gemini `generateContent`: the hosted source defaults to `gemini-3.5-flash-lite`; the separate local source defaults to `gemini-3.1-flash-lite`. `GEMINI_MODEL` can override the default server-side; production's configured override was not inspected. Both identifiers were present in Google's official model documentation at audit time; that does not establish account entitlement. Never set a provider key in a `VITE_*` variable. The hosted request has at most two attempts within a 45-second deadline; the local Gemini request has at most two within 25 seconds. Quota and configuration failures are not retried.
 
-A Gemini-origin explanation was observed in the hosted Learn screen on 22 November; its cache freshness was not visible in the old UI. The repaired UI labels cache hits. Private sign-in/recovery and backup restore remain unverified, and the previously exposed credential must still be identified and revoked by its owner. No repair-branch change is claimed deployed.
+A Gemini-origin explanation was observed in the hosted Learn screen on 22 November; its cache freshness was not visible in the old UI. The repaired UI labels cache hits. Private sign-in/recovery and backup restore remain unverified, and the previously exposed credential must still be identified and revoked by its owner. The repaired hosted source is deployed as version 6 (managed source `e100153629a8cc12e6bf2bc5f3cf7c8f01628aef`).
 
-Fresh live evidence: [persisted dashboard](docs/screenshots/audit-2026-11-22/live-overview.jpg), [budget warning](docs/screenshots/audit-2026-11-22/live-budget.jpg), and [Pip explanation](docs/screenshots/audit-2026-11-22/live-pip.jpg). These show the existing deployed version with synthetic data; the repaired branch is not yet deployed.
+Fresh live evidence: [persisted dashboard](docs/screenshots/audit-2026-11-22/live-overview.jpg), [budget warning](docs/screenshots/audit-2026-11-22/live-budget.jpg), and [Pip explanation](docs/screenshots/audit-2026-11-22/live-pip.jpg). These are historical pre-repair captures with synthetic data; the repairs have since been deployed.
